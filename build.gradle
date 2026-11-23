@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenLocal()
+    maven { url = 'https://repo.runelite.net' }
+    mavenCentral()
+}
+
+def runeLiteVersion = 'latest.release'
+
+dependencies {
+    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+}
+
+group = 'com.sweatnation'
+version = '1.0.0'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(11)
+}
+
+// ./gradlew run  -> starter RuneLite med SweatNation ferdig lastet (utviklermodus)
+tasks.register('run', JavaExec) {
+    group = 'application'
+    description = 'Start RuneLite med SweatNation-pluginen lastet'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.sweatnation.SweatNationPluginTest'
+    jvmArgs '-ea'
+    args '--developer-mode', '--debug'
+}
+
+// ./gradlew pluginJar -> build/libs/sweatnation-1.0.0.jar (for sideloaded-plugins)
+tasks.register('pluginJar', Jar) {
+    group = 'build'
+    archiveBaseName = 'sweatnation'
+    from sourceSets.main.output
+}
