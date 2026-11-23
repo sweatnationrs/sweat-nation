@@ -210,6 +210,7 @@ public class SweatNationPlugin extends Plugin implements SweatNationController
 	@Inject private ChatMessageManager chatMessageManager;
 	@Inject private WorldService worldService;
 	@Inject private ItemManager itemManager;
+	@Inject private net.runelite.client.audio.AudioPlayer audioPlayer;
 	@Inject private net.runelite.client.game.SkillIconManager skillIconManager;
 	@Inject private net.runelite.client.ui.overlay.infobox.InfoBoxManager infoBoxManager;
 	@Inject private Gson gson;
@@ -1880,7 +1881,7 @@ public class SweatNationPlugin extends Plugin implements SweatNationController
 		}
 		if (!config.rallyDuckMusic())
 		{
-			RallySound.play(executor, config.rallyVolume());
+			RallySound.play(executor, audioPlayer, config.rallyVolume());
 			return;
 		}
 		clientThread.invokeLater(() ->
@@ -1891,7 +1892,7 @@ public class SweatNationPlugin extends Plugin implements SweatNationController
 				int vol = client.getMusicVolume();
 				if (vol <= 0)
 				{
-					RallySound.play(executor, config.rallyVolume()); // musikken er allerede av
+					RallySound.play(executor, audioPlayer, config.rallyVolume()); // musikken er allerede av
 					return;
 				}
 				savedMusicVolume = vol;
@@ -1909,7 +1910,7 @@ public class SweatNationPlugin extends Plugin implements SweatNationController
 			{
 				if (duckGeneration.get() == gen)
 				{
-					RallySound.play(executor, volume);
+					RallySound.play(executor, audioPlayer, volume);
 				}
 			}, DUCK_FADE_DOWN_MS, TimeUnit.MILLISECONDS);
 			// 3) ton musikken opp igjen når kallet er ferdig
